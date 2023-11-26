@@ -1,0 +1,70 @@
+// Bobocu Alexandra-Florentina, 311CA
+
+In rezolvarea temei, am urmat cu atentie fiecare TODO in parte, am aplicat
+formulele prezentate in enuntul temei si am urmarit frecvent intrebarile de
+pe forumul asociat acestei teme.
+
+La implementarea functiilor pentru imagini colorate am procedat similar in
+toate cele 3 cazuri de interpolari pe imagini. Am tratat fiecare canal rosu/
+verde/ albastru al imaginii in parte.
+
+In implementarea functiei care determina coordonatele punctelor ce inconjoara
+punctul de referinta, am folosit floor() (pentru bilinear, bicubic).
+
+In cadrul functiilor de redimensionare a imaginii, am calculat asa cum este
+indicat factorii de scalare, astfel incat originea imaginii sa nu se
+modifice.
+Inversa este o matrice diagonala, o scriu exact cum este prezentata in enunt.
+Salvez intr-o variabila rezultatul transformarii inverse asupra vectorului care
+retine coordonatele imaginii finale. Acest rezultat este un vector si pentru
+usurinta fac identificare de termeni in cei 2 vectori: transf si [x_p; y_p].
+
+1) Interpolarea nearest-neighbour:
+-nn_2x2:
+Iau o variabila "middle" in care retin valoarea de mijloc a pixelului: (1+2)/2.
+Decid in ce regiune imi voi plasa valoarea pixelului. Consider ca imaginea
+finala se imparte in 4 regiuni. In cazul in care atat pixelul abscisei cat si
+cel al ordonatei nu depasesc valoarea de mijloc, matricei finale ii corespunde
+pixelul din stanga sus: f(1, 1). Procedez similar si in cazul celor 3 regiuni
+ramase.
+-nn_resize:
+Pentru a calcula cel mai apropiat vecin, am ales sa folosesc functia round().
+
+2) Interpolarea bilineara:
+-bilinear_coef:
+Solutionez sistemul Ax=b folosind operatorul \.
+-bilinear_2x2:
+Inainte de a calcula coeficientii de interpolare biliniara, am grija sa lucrez
+cu imaginea double(), deci castez f corespunzator.
+Populez matricea rezultat out cu valorile asteptate.
+-bilinear_rotate:
+Matricea mea de transformare este o matrice Givens. Aflu R ca la
+bilinear_resize.
+
+3) Interpolarea bicubica:
+-fx, fy, fxy:
+Am aproximat derivatele partiale folosind formulele din enunt.
+-bicubic_coef:
+Am observat ca a treia matrice este transpusa primei matrici, asa ca nu am mai
+transcris-o cum era prezentata in enunt.
+-precalc_d:
+Initializez de la bun inceput matricile Ix, Iy si Ixy cu 0, deoarece o sa evit
+sa mai aproximez derivatele partiale in marginile stanga-dreapta (Ix),
+jos-sus(Iy), in nicio margine (Ixy), stiind sigur ca pun pixel negru.
+
+
+Feedback:
+-Ideea temei a fost interesanta si atractiva, interpolarea de imagini
+fiind un subiect de interes.
+-Enuntul temei este detaliat, include formulele sub forma matematica, dar si
+sub forma in care ar trebui ele folosite in implementarea propriu-zisa.
+-Scheletul pus la dispozitie m-a sprijinit in rezolvarea temei. Fiecare TODO
+arata exact ce trebuie facut, fapt care mi-a usurat procesul de rezolvare
+relativ rapide a temei.
+*Ceea ce mi-a provocat o mica dificultate in schimb a fost principiul de a
+opera cu x pe coloane si cu y pe linii, nefiind obisnuita in acest mod.
+In cazul redimensionarii, nu mi-a fost foarte clar numai din enunt ce ar
+trebui sa fac mai exact, insa dupa consultarea forumului m-am lamurit si
+cum ar trebui calculati factorii de scalare, al caror calcul putea crea
+dificultati daca nu tineam cont si ca indexarea in Octave se face de la 1.
+
